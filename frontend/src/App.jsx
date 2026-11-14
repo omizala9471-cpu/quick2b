@@ -8,15 +8,23 @@ import VendorDefaulterHub from './components/VendorDefaulterHub';
 import UploadModal from './components/UploadModal';
 import ClientModal from './components/ClientModal';
 import SlideOverDrawer from './components/SlideOverDrawer';
+import LoginView from './components/LoginView';
+import SecuritySettingsModal from './components/SecuritySettingsModal';
 import { 
   CheckCircle2, 
   RefreshCw,
   FileSpreadsheet,
-  Upload
+  Upload,
+  Loader2
 } from 'lucide-react';
 import { API_BASE } from './config';
 
 export default function App() {
+  const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const [authChecking, setAuthChecking] = useState(true);
+  const [currentUserId, setCurrentUserId] = useState('admin');
+  const [securityModalOpen, setSecurityModalOpen] = useState(false);
+
   const [clients, setClients] = useState([]);
   const [activeClient, setActiveClient] = useState(null);
   const [recoData, setRecoData] = useState({ items: [], summary_matrix: {}, kpis: {} });
@@ -31,6 +39,49 @@ export default function App() {
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [clientModalOpen, setClientModalOpen] = useState(false);
   const [editRow, setEditRow] = useState(null);
+
+  // Check authentication session on initial load
+  useEffect(() => {
+    const verifyAuth = async () => {
+      const token = localStorage.getItem('quick2b_token');
+      const savedUser = localStorage.getItem('quick2b_user_id') || 'admin';
+      setCurrentUserId(savedUser);
+
+      if (!token) {
+        setIsAuthenticated(false);
+        setAuthChecking(false);
+        return;
+      }
+
+      try {
+        const res = await fetch(`${API_BASE}/auth/verify`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ token })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.valid) {
+            setIsAuthenticated(true);
+            if (data.user_id) setCurrentUserId(data.user_id);
+            fetchData();
+          } else {
+            setIsAuthenticated(false);
+          }
+        } else {
+          setIsAuthenticated(false);
+        }
+      } catch (err) {
+        // Fallback for offline resilience
+        setIsAuthenticated(true);
+        fetchData();
+      } finally {
+        setAuthChecking(false);
+      }
+    };
+
+    verifyAuth();
+  }, []);
 
   const fetchData = async () => {
     setLoading(true);
@@ -59,9 +110,16 @@ export default function App() {
     }
   };
 
-  useEffect(() => {
+  const handleLoginSuccess = (loginData) => {
+    setIsAuthenticated(true);
+    if (loginData.user_id) setCurrentUserId(loginData.user_id);
     fetchData();
-  }, []);
+  };
+
+  const handleLogout = () => {
+    localStorage.removeItem('quick2b_token');
+    setIsAuthenticated(false);
+  };
 
   const handleSwitchClient = async (clientId) => {
     try {
@@ -111,6 +169,25 @@ export default function App() {
     }
   };
 
+  if (authChecking) {
+    return (
+      <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
+        <div className="w-12 h-12 rounded-2xl bg-slate-950 text-white flex items-center justify-center shadow-lg border border-slate-800 mb-4 animate-pulse">
+          <FileSpreadsheet className="w-6 h-6 text-emerald-400" />
+        </div>
+        <div className="text-white font-extrabold text-base tracking-tight mb-2">Quick2B Enterprise</div>
+        <div className="flex items-center space-x-2 text-slate-400 font-mono text-xs">
+          <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-400" />
+          <span>Securing Compliance Workspace...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isAuthenticated) {
+    return <LoginView onLoginSuccess={handleLoginSuccess} />;
+  }
+
   return (
     <div className="min-h-screen bg-slate-50 flex flex-row font-sans text-slate-900 selection:bg-blue-600 selection:text-white">
       
@@ -131,6 +208,8 @@ export default function App() {
         onCloseMobile={() => setMobileSidebarOpen(false)}
         isCollapsed={sidebarCollapsed}
         onToggleCollapse={() => setSidebarCollapsed(!sidebarCollapsed)}
+        onOpenSecurityModal={() => setSecurityModalOpen(true)}
+        onLogout={handleLogout}
       />
 
       {/* 2. Main Right Content Area (Smoothly adjusts to sidebar width) */}
@@ -147,6 +226,8 @@ export default function App() {
           isExporting={isExporting}
           isSidebarCollapsed={sidebarCollapsed}
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
+          onOpenSecurityModal={() => setSecurityModalOpen(true)}
+          onLogout={handleLogout}
         />
 
         {/* Content Body */}
@@ -227,7 +308,7 @@ export default function App() {
         {/* Footer */}
         <footer className="bg-white border-t border-slate-300 text-slate-500 text-xs py-3.5 px-4 text-center mt-auto">
           <div className="max-w-7xl mx-auto flex flex-wrap items-center justify-between gap-2">
-            <span className="font-bold text-slate-800">GST Reco Pro • Professional Reconciliation Suite</span>
+            <span className="font-bold text-slate-800">Quick2B • AI GST Reconciliation Suite</span>
             <span>Auditor: <strong className="text-slate-900 font-mono">CA Kanhaiya Soni</strong></span>
             <span className="text-emerald-700 font-bold font-mono">100% Bit-Perfect 5-Sheet Excel Engine</span>
           </div>
@@ -259,6 +340,13 @@ export default function App() {
         onSaveOverride={(data) => {
           fetchData();
         }}
+      />
+
+      <SecuritySettingsModal
+        isOpen={securityModalOpen}
+        onClose={() => setSecurityModalOpen(false)}
+        currentUserId={currentUserId}
+        onCredentialsUpdated={(newId) => setCurrentUserId(newId)}
       />
 
     </div>

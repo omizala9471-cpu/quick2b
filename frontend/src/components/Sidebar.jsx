@@ -17,7 +17,9 @@ import {
   FileSpreadsheet,
   PanelLeftClose,
   PanelLeft,
-  X
+  X,
+  KeyRound,
+  LogOut
 } from 'lucide-react';
 
 export default function Sidebar({
@@ -35,7 +37,9 @@ export default function Sidebar({
   isOpenMobile,
   onCloseMobile,
   isCollapsed = false,
-  onToggleCollapse
+  onToggleCollapse,
+  onOpenSecurityModal,
+  onLogout
 }) {
   const [dropdownOpen, setDropdownOpen] = useState(false);
   const [clientSearch, setClientSearch] = useState('');
@@ -354,17 +358,35 @@ export default function Sidebar({
         {/* Bottom Auditor Stamp with Defined Border */}
         <div className="p-3 border-t border-slate-200 bg-slate-50">
           {isExpanded ? (
-            <div className="flex items-center space-x-2.5 p-1 rounded-xl bg-white border border-slate-200 shadow-2xs">
-              <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-mono font-bold text-xs shrink-0 shadow-sm border border-slate-800">
-                KS
+            <div className="flex items-center justify-between p-1 rounded-xl bg-white border border-slate-200 shadow-2xs">
+              <div className="flex items-center space-x-2.5 min-w-0">
+                <div className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-mono font-bold text-xs shrink-0 shadow-sm border border-slate-800">
+                  KS
+                </div>
+                <div className="truncate min-w-0">
+                  <div className="text-xs font-bold text-slate-900 truncate">
+                    CA Kanhaiya Soni
+                  </div>
+                  <div className="text-[10px] text-slate-500 font-mono truncate">
+                    Chartered Accountant
+                  </div>
+                </div>
               </div>
-              <div className="truncate min-w-0">
-                <div className="text-xs font-bold text-slate-900 truncate">
-                  CA Kanhaiya Soni
-                </div>
-                <div className="text-[10px] text-slate-500 font-mono truncate">
-                  Chartered Accountant
-                </div>
+              <div className="flex items-center space-x-1 shrink-0 pr-1">
+                <button
+                  onClick={onOpenSecurityModal}
+                  className="p-1 rounded-md text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition-colors cursor-pointer"
+                  title="Security & Password"
+                >
+                  <KeyRound className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={onLogout}
+                  className="p-1 rounded-md text-slate-400 hover:text-rose-600 hover:bg-rose-50 transition-colors cursor-pointer"
+                  title="Log Out"
+                >
+                  <LogOut className="w-3.5 h-3.5" />
+                </button>
               </div>
             </div>
           ) : (

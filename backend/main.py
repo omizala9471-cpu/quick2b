@@ -9,8 +9,23 @@ from typing import Optional, List, Dict, Any
 
 from backend.models.client import ClientProfile, OverrideRequest, VendorNoticeRequest
 from backend.storage.store import store
+from backend.storage.auth_manager import auth_manager
 from backend.engine.reconciliation import reconcile_records
 from backend.engine.excel_builder import build_reconciliation_workbook
+from pydantic import BaseModel
+
+class LoginRequest(BaseModel):
+    user_id: str
+    password: str
+
+class VerifyRequest(BaseModel):
+    token: str
+
+class ChangeCredentialsRequest(BaseModel):
+    current_user_id: str
+    current_password: str
+    new_user_id: str
+    new_password: str
 
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 FRONTEND_DIST = os.path.join(os.path.dirname(BASE_DIR), "frontend", "dist")
@@ -46,6 +61,49 @@ def get_user_profile():
         "active_client": active_client,
         "clients_count": len(store.get_clients())
     }
+
+# ----------------- Portal Authentication & Security Endpoints -----------------
+
+@app.post("/api/auth/login")
+def login(req: LoginRequest):
+    token = auth_manager.verify_login(req.user_id, req.password)
+    if not token:
+        raise HTTPException(status_code=401, detail="Invalid User ID or Password.")
+    return {
+        "status": "success",
+        "token": token,
+        "user_id": auth_manager.get_current_user_id(),
+        "name": "CA Kanhaiya Soni"
+    }
+
+@app.post("/api/auth/verify")
+def verify_token(req: VerifyRequest):
+    is_valid = auth_manager.validate_token(req.token)
+    return {
+        "valid": is_valid,
+        "user_id": auth_manager.get_current_user_id() if is_valid else None
+    }
+
+@app.post("/api/auth/change-credentials")
+def change_credentials(req: ChangeCredentialsRequest):
+    success, result = auth_manager.change_credentials(
+        req.current_user_id,
+        req.current_password,
+        req.new_user_id,
+        req.new_password
+    )
+    if not success:
+        raise HTTPException(status_code=400, detail=result)
+    return {
+        "status": "success",
+        "message": "Credentials updated successfully.",
+        "token": result,
+        "user_id": auth_manager.get_current_user_id()
+    }
+
+@app.get("/api/auth/current-user")
+def get_current_user():
+    return {"user_id": auth_manager.get_current_user_id()}
 
 # ----------------- Multi-Client Profile Endpoints -----------------
 

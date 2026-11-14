@@ -7,7 +7,9 @@ import {
   CheckCircle2, 
   FileSpreadsheet,
   PanelLeft,
-  PanelLeftClose
+  PanelLeftClose,
+  KeyRound,
+  LogOut
 } from 'lucide-react';
 
 export default function Navbar({
@@ -17,7 +19,9 @@ export default function Navbar({
   onExportExcel,
   isExporting,
   isSidebarCollapsed,
-  onToggleSidebar
+  onToggleSidebar,
+  onOpenSecurityModal,
+  onLogout
 }) {
   return (
     <header className="sticky top-0 z-30 px-4 sm:px-6 lg:px-8 h-16 bg-white/95 backdrop-blur-md border-b border-slate-300 shadow-[0_1px_4px_rgba(15,23,42,0.04)] flex items-center justify-between gap-4">
@@ -94,15 +98,35 @@ export default function Navbar({
           <span className="whitespace-nowrap">{isExporting ? 'Generating...' : 'Export 5-Sheet Excel'}</span>
         </button>
 
-        {/* Quick2B User Profile Badge */}
-        <div className="hidden md:flex items-center space-x-2 pl-2 border-l border-slate-300 text-xs">
-          <div className="w-7 h-7 rounded-lg bg-blue-600 text-white font-mono font-bold flex items-center justify-center text-[10px] shadow-2xs">
-            Q2B
+        {/* Quick2B User Profile Badge & Security Options */}
+        <div className="flex items-center space-x-2 pl-2 border-l border-slate-300 text-xs">
+          <div className="hidden sm:flex items-center space-x-2 mr-1">
+            <div className="w-7 h-7 rounded-lg bg-blue-600 text-white font-mono font-bold flex items-center justify-center text-[10px] shadow-2xs">
+              Q2B
+            </div>
+            <div className="text-left">
+              <div className="text-[11px] font-bold text-slate-900 leading-tight">Quick2B Cloud</div>
+              <div className="text-[10px] text-emerald-600 font-mono font-bold leading-tight">Audit Portal</div>
+            </div>
           </div>
-          <div className="text-left">
-            <div className="text-[11px] font-bold text-slate-900 leading-tight">Quick2B Cloud</div>
-            <div className="text-[10px] text-emerald-600 font-mono font-bold leading-tight">Audit Portal</div>
-          </div>
+
+          {/* Security / Password Button */}
+          <button
+            onClick={onOpenSecurityModal}
+            className="p-1.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 border border-slate-200 shadow-2xs transition-colors cursor-pointer"
+            title="Portal Security & Change Password"
+          >
+            <KeyRound className="w-4 h-4 text-slate-700" />
+          </button>
+
+          {/* Logout Button */}
+          <button
+            onClick={onLogout}
+            className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 shadow-2xs transition-colors cursor-pointer"
+            title="Lock Portal & Log Out"
+          >
+            <LogOut className="w-4 h-4" />
+          </button>
         </div>
 
       </div>
