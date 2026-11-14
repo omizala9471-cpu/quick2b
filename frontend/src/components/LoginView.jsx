@@ -1,15 +1,15 @@
 import React, { useState } from 'react';
 import { 
-  FileSpreadsheet, 
   Lock, 
   User, 
   Eye, 
   EyeOff, 
   ShieldCheck, 
-  ArrowRight,
-  AlertCircle,
-  Loader2
+  ArrowRight, 
+  AlertCircle, 
+  Loader2 
 } from 'lucide-react';
+import Quick2BLogo from './Quick2BLogo';
 import { API_BASE } from '../config';
 
 export default function LoginView({ onLoginSuccess }) {
@@ -75,9 +75,7 @@ export default function LoginView({ onLoginSuccess }) {
           
           {/* Brand Header */}
           <div className="flex items-center space-x-3.5 mb-6">
-            <div className="w-12 h-12 rounded-2xl bg-slate-950 text-white flex items-center justify-center shadow-md border border-slate-800 shrink-0">
-              <FileSpreadsheet className="w-6 h-6 text-emerald-400" />
-            </div>
+            <Quick2BLogo size={48} className="shadow-md" />
             <div>
               <div className="flex items-center space-x-2">
                 <span className="font-sans font-black text-xl text-slate-900 tracking-tight">Quick2B</span>

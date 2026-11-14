@@ -14,7 +14,6 @@ import {
   AlertCircle, 
   ShieldCheck, 
   Sparkles,
-  FileSpreadsheet,
   PanelLeftClose,
   PanelLeft,
   X,
@@ -24,6 +23,7 @@ import {
   Trash2,
   Loader2
 } from 'lucide-react';
+import Quick2BLogo from './Quick2BLogo';
 
 export default function Sidebar({
   clients = [],
@@ -128,9 +128,7 @@ export default function Sidebar({
           {/* Brand Header */}
           <div className="h-16 px-4 border-b border-slate-200 flex items-center justify-between bg-slate-50/70">
             <div className="flex items-center space-x-3 overflow-hidden">
-              <div className="w-8 h-8 rounded-lg bg-slate-900 flex items-center justify-center text-white shrink-0 shadow-sm border border-slate-800">
-                <FileSpreadsheet className="w-4 h-4 text-emerald-400" />
-              </div>
+              <Quick2BLogo size={32} />
               
               {isExpanded && (
                 <div className="min-w-0 transition-opacity duration-200">

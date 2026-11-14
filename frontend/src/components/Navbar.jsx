@@ -5,7 +5,6 @@ import {
   Upload, 
   RotateCcw, 
   CheckCircle2, 
-  FileSpreadsheet,
   PanelLeft,
   PanelLeftClose,
   KeyRound,
@@ -14,6 +13,7 @@ import {
   Trash2,
   Loader2
 } from 'lucide-react';
+import Quick2BLogo from './Quick2BLogo';
 
 export default function Navbar({
   activeClient,
@@ -129,9 +129,7 @@ export default function Navbar({
         {/* Quick2B User Profile Badge & Security Options */}
         <div className="flex items-center space-x-2 pl-2 border-l border-slate-300 text-xs">
           <div className="hidden sm:flex items-center space-x-2 mr-1">
-            <div className="w-7 h-7 rounded-lg bg-blue-600 text-white font-mono font-bold flex items-center justify-center text-[10px] shadow-2xs">
-              Q2B
-            </div>
+            <Quick2BLogo size={28} />
             <div className="text-left">
               <div className="text-[11px] font-bold text-slate-900 leading-tight">Quick2B Cloud</div>
               <div className="text-[10px] text-emerald-600 font-mono font-bold leading-tight">Audit Portal</div>

@@ -11,10 +11,10 @@ import DeleteClientModal from './components/DeleteClientModal';
 import SlideOverDrawer from './components/SlideOverDrawer';
 import LoginView from './components/LoginView';
 import SecuritySettingsModal from './components/SecuritySettingsModal';
+import Quick2BLogo from './components/Quick2BLogo';
 import { 
   CheckCircle2, 
   RefreshCw,
-  FileSpreadsheet,
   Upload,
   Loader2
 } from 'lucide-react';
@@ -202,9 +202,7 @@ export default function App() {
   if (authChecking) {
     return (
       <div className="min-h-screen bg-slate-900 flex flex-col items-center justify-center p-4">
-        <div className="w-12 h-12 rounded-2xl bg-slate-950 text-white flex items-center justify-center shadow-lg border border-slate-800 mb-4 animate-pulse">
-          <FileSpreadsheet className="w-6 h-6 text-emerald-400" />
-        </div>
+        <Quick2BLogo size={56} className="mb-4 shadow-2xl animate-pulse" />
         <div className="text-white font-extrabold text-base tracking-tight mb-2">Quick2B Enterprise</div>
         <div className="flex items-center space-x-2 text-slate-400 font-mono text-xs">
           <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-400" />
