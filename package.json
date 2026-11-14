@@ -1,0 +1,11 @@
+{
+  "name": "quick2b",
+  "version": "2.4.0",
+  "description": "Quick2B — AI & Automated GST Reconciliation Platform for CAs and Tax Auditors",
+  "private": true,
+  "author": "CA Kanhaiya Soni <omizala9471@gmail.com>",
+  "scripts": {
+    "build": "cd frontend && npm install && npm run build",
+    "start": "python -m uvicorn backend.main:app --host 0.0.0.0 --port 8000"
+  }
+}

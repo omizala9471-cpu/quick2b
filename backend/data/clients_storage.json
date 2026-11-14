@@ -1,0 +1,41 @@
+{
+  "clients": [
+    {
+      "id": "client-1",
+      "name": "Shri Mahadev Automobiles",
+      "trade_name": "Shri Mahadev Automobiles",
+      "gstin": "08AAACM0000A1Z5",
+      "email": "info@mahadevauto.com",
+      "fy": "2025-26",
+      "contact_person": "Mahadev Sharma",
+      "phone": "+91 98290 12345",
+      "created_at": "2025-04-01",
+      "is_active": true
+    },
+    {
+      "id": "client-2",
+      "name": "Mahadev Spare Parts & Services",
+      "trade_name": "Mahadev Spare Parts",
+      "gstin": "08AAIFI6732P1ZQ",
+      "email": "omizala9471@gmail.com",
+      "fy": "2025-26",
+      "contact_person": "Kanhaiya Soni",
+      "phone": "+91 94280 67890",
+      "created_at": "2025-05-15",
+      "is_active": false
+    },
+    {
+      "id": "client-3",
+      "name": "Rajasthan Auto Spares Ltd",
+      "trade_name": "Rajasthan Auto Spares",
+      "gstin": "08ABSPA0764C1ZW",
+      "email": "contact@rajasthanautospares.in",
+      "fy": "2025-26",
+      "contact_person": "Rajesh Kumar",
+      "phone": "+91 98299 54321",
+      "created_at": "2025-06-01",
+      "is_active": false
+    }
+  ],
+  "active_client_id": "client-1"
+}
