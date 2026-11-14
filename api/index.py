@@ -1,5 +1,6 @@
 import sys
 import os
+from urllib.parse import parse_qs
 
 # Add root directory to python path for Vercel serverless environment
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -10,27 +11,20 @@ from backend.main import app as fastapi_app
 
 class VercelFastAPIMiddleware:
     """
-    Normalizes paths between Vercel Serverless Function rewrites and FastAPI routes.
-    Ensures that whether Vercel rewrites to /api/index.py or strips /api,
-    FastAPI receives the correct /api/... path.
+    Seamlessly unwraps the rewritten __path__ query param from Vercel rewrites
+    so FastAPI routes match accurately.
     """
     def __init__(self, app):
         self.app = app
 
     async def __call__(self, scope, receive, send):
         if scope["type"] == "http":
-            path = scope.get("path", "")
-            headers = dict(scope.get("headers", []))
-            
-            # Check for Vercel matched path header
-            x_matched = headers.get(b"x-matched-path", b"").decode("utf-8")
-            if x_matched and x_matched.startswith("/api/"):
-                scope["path"] = x_matched
-            elif path in ("/api/index.py", "/api", "/api/"):
+            query_string = scope.get("query_string", b"").decode("utf-8")
+            qs = parse_qs(query_string)
+            if "__path__" in qs:
+                scope["path"] = qs["__path__"][0]
+            elif scope.get("path") in ("/api/index.py", "/api", "/api/"):
                 scope["path"] = "/api/health"
-            elif not scope["path"].startswith("/api"):
-                scope["path"] = f"/api{scope['path']}"
-                
         await self.app(scope, receive, send)
 
 app = VercelFastAPIMiddleware(fastapi_app)
