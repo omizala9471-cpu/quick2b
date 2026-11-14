@@ -1,5 +1,5 @@
 // Quick2B Supabase Client Configuration
-// Owner: CA Kanhaiya Soni (omizala9471@gmail.com)
+// Lead Auditor: CA Kanhaiya Soni
 
 const supabaseUrl = typeof import.meta !== 'undefined' && import.meta.env 
   ? (import.meta.env.VITE_SUPABASE_URL || '') 

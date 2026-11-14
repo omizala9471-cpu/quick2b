@@ -32,15 +32,14 @@ def health_check():
         "service": "Quick2B API",
         "app": "Quick2B",
         "version": "2.4.0",
-        "user": "Kanhaiya Soni",
-        "email": "omizala9471@gmail.com"
+        "user": "Kanhaiya Soni"
     }
 
 @app.get("/api/profile")
 def get_user_profile():
     active_client = store.get_active_client()
     return {
-        "email": "omizala9471@gmail.com",
+        "email": "contact@quick2b.in",
         "name": "CA Kanhaiya Soni & Associates",
         "role": "Chartered Accountant & Tax Auditor",
         "app": "Quick2B",

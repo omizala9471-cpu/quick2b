@@ -101,7 +101,7 @@ export default function Navbar({
           </div>
           <div className="text-left">
             <div className="text-[11px] font-bold text-slate-900 leading-tight">Quick2B Cloud</div>
-            <div className="text-[10px] text-slate-500 font-mono leading-tight">omizala9471@gmail.com</div>
+            <div className="text-[10px] text-emerald-600 font-mono font-bold leading-tight">Audit Portal</div>
           </div>
         </div>
 

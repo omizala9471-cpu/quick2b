@@ -362,8 +362,8 @@ export default function Sidebar({
                 <div className="text-xs font-bold text-slate-900 truncate">
                   CA Kanhaiya Soni
                 </div>
-                <div className="text-[10px] text-slate-500 font-mono truncate" title="omizala9471@gmail.com">
-                  omizala9471@gmail.com
+                <div className="text-[10px] text-slate-500 font-mono truncate">
+                  Chartered Accountant
                 </div>
               </div>
             </div>
@@ -371,7 +371,7 @@ export default function Sidebar({
             <div className="flex justify-center">
               <div 
                 className="w-8 h-8 rounded-lg bg-slate-900 text-white flex items-center justify-center font-mono font-bold text-xs shrink-0 shadow-sm border border-slate-800 cursor-help"
-                title="Auditor: CA Kanhaiya Soni (omizala9471@gmail.com)"
+                title="Auditor: CA Kanhaiya Soni"
               >
                 KS
               </div>
