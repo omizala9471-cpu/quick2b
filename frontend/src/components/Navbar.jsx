@@ -9,7 +9,10 @@ import {
   PanelLeft,
   PanelLeftClose,
   KeyRound,
-  LogOut
+  LogOut,
+  Edit3,
+  Trash2,
+  Loader2
 } from 'lucide-react';
 
 export default function Navbar({
@@ -21,7 +24,9 @@ export default function Navbar({
   isSidebarCollapsed,
   onToggleSidebar,
   onOpenSecurityModal,
-  onLogout
+  onLogout,
+  onOpenEditClientModal,
+  onOpenDeleteClientModal
 }) {
   return (
     <header className="sticky top-0 z-30 px-4 sm:px-6 lg:px-8 h-16 bg-white/95 backdrop-blur-md border-b border-slate-300 shadow-[0_1px_4px_rgba(15,23,42,0.04)] flex items-center justify-between gap-4">
@@ -53,7 +58,7 @@ export default function Navbar({
 
         <div className="h-5 w-px bg-slate-300 hidden lg:block" />
 
-        {/* Entity Title & Status */}
+        {/* Entity Title & Status with Quick Edit & Delete */}
         <div className="min-w-0">
           <div className="flex items-center space-x-2 truncate">
             <h1 className="font-sans font-black text-sm sm:text-base text-slate-900 truncate">
@@ -62,6 +67,25 @@ export default function Navbar({
             <span className="hidden sm:inline-block bg-blue-50 text-blue-800 text-[11px] px-2.5 py-0.5 rounded-full font-mono font-bold border border-blue-300 shadow-2xs">
               FY {activeClient?.fy || '2025-26'}
             </span>
+            
+            {activeClient && (
+              <div className="hidden sm:flex items-center space-x-0.5">
+                <button
+                  onClick={() => onOpenEditClientModal && onOpenEditClientModal(activeClient)}
+                  className="p-1 rounded-md text-slate-400 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                  title="Edit Client Profile"
+                >
+                  <Edit3 className="w-3.5 h-3.5" />
+                </button>
+                <button
+                  onClick={() => onOpenDeleteClientModal && onOpenDeleteClientModal(activeClient)}
+                  className="p-1 rounded-md text-slate-400 hover:text-rose-700 hover:bg-rose-50 transition-colors"
+                  title="Delete Client Profile"
+                >
+                  <Trash2 className="w-3.5 h-3.5" />
+                </button>
+              </div>
+            )}
           </div>
           <div className="flex items-center space-x-2 text-xs text-slate-600 font-mono truncate">
             <span className="truncate">GSTIN: <strong className="text-slate-800">{activeClient?.gstin}</strong></span>
@@ -94,7 +118,11 @@ export default function Navbar({
           disabled={isExporting}
           className="flex items-center space-x-1.5 px-4 py-1.5 rounded-xl text-xs font-black text-white bg-slate-900 hover:bg-slate-800 border border-slate-950 transition-all disabled:opacity-50 shadow-sm"
         >
-          <Download className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
+          {isExporting ? (
+            <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-400" />
+          ) : (
+            <Download className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
+          )}
           <span className="whitespace-nowrap">{isExporting ? 'Generating...' : 'Export 5-Sheet Excel'}</span>
         </button>
 
@@ -122,10 +150,10 @@ export default function Navbar({
           {/* Logout Button */}
           <button
             onClick={onLogout}
-            className="p-1.5 rounded-lg text-slate-500 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 shadow-2xs transition-colors cursor-pointer"
+            className="p-1.5 rounded-lg text-slate-600 hover:text-rose-600 hover:bg-rose-50 border border-slate-200 shadow-2xs transition-colors cursor-pointer"
             title="Lock Portal & Log Out"
           >
-            <LogOut className="w-4 h-4" />
+            <LogOut className="w-4 h-4 text-slate-700 hover:text-rose-600" />
           </button>
         </div>
 

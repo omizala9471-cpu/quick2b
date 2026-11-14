@@ -7,6 +7,7 @@ import MasterGrid from './components/MasterGrid';
 import VendorDefaulterHub from './components/VendorDefaulterHub';
 import UploadModal from './components/UploadModal';
 import ClientModal from './components/ClientModal';
+import DeleteClientModal from './components/DeleteClientModal';
 import SlideOverDrawer from './components/SlideOverDrawer';
 import LoginView from './components/LoginView';
 import SecuritySettingsModal from './components/SecuritySettingsModal';
@@ -38,7 +39,36 @@ export default function App() {
   // Modals & Drawer
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [clientModalOpen, setClientModalOpen] = useState(false);
+  const [clientToEdit, setClientToEdit] = useState(null);
+  const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+  const [clientToDelete, setClientToDelete] = useState(null);
   const [editRow, setEditRow] = useState(null);
+
+  const handleOpenNewClientModal = () => {
+    setClientToEdit(null);
+    setClientModalOpen(true);
+  };
+
+  const handleOpenEditClientModal = (client) => {
+    setClientToEdit(client || activeClient);
+    setClientModalOpen(true);
+  };
+
+  const handleOpenDeleteClientModal = (client) => {
+    setClientToDelete(client || activeClient);
+    setDeleteModalOpen(true);
+  };
+
+  const handleClientSaved = async (savedClient, isEdit) => {
+    await fetchData();
+    if (!isEdit && savedClient?.id) {
+      handleSwitchClient(savedClient.id);
+    }
+  };
+
+  const handleClientDeleted = async () => {
+    await fetchData();
+  };
 
   // Check authentication session on initial load
   useEffect(() => {
@@ -196,7 +226,9 @@ export default function App() {
         clients={clients}
         activeClient={activeClient}
         onSwitchClient={handleSwitchClient}
-        onOpenNewClientModal={() => setClientModalOpen(true)}
+        onOpenNewClientModal={handleOpenNewClientModal}
+        onOpenEditClientModal={handleOpenEditClientModal}
+        onOpenDeleteClientModal={handleOpenDeleteClientModal}
         onOpenUploadModal={() => setUploadModalOpen(true)}
         onExportExcel={handleExportExcel}
         isExporting={isExporting}
@@ -228,6 +260,8 @@ export default function App() {
           onToggleSidebar={() => setSidebarCollapsed(!sidebarCollapsed)}
           onOpenSecurityModal={() => setSecurityModalOpen(true)}
           onLogout={handleLogout}
+          onOpenEditClientModal={handleOpenEditClientModal}
+          onOpenDeleteClientModal={handleOpenDeleteClientModal}
         />
 
         {/* Content Body */}
@@ -327,10 +361,23 @@ export default function App() {
 
       <ClientModal
         isOpen={clientModalOpen}
-        onClose={() => setClientModalOpen(false)}
-        onClientCreated={(newClient) => {
-          handleSwitchClient(newClient.id);
+        clientToEdit={clientToEdit}
+        onClose={() => {
+          setClientModalOpen(false);
+          setClientToEdit(null);
         }}
+        onClientSaved={handleClientSaved}
+      />
+
+      <DeleteClientModal
+        isOpen={deleteModalOpen}
+        client={clientToDelete}
+        totalClientsCount={clients.length}
+        onClose={() => {
+          setDeleteModalOpen(false);
+          setClientToDelete(null);
+        }}
+        onDeleted={handleClientDeleted}
       />
 
       <SlideOverDrawer

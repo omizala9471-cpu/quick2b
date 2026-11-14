@@ -8,7 +8,8 @@ from backend.storage.supabase_store import (
     fetch_clients_from_supabase,
     upsert_client_to_supabase,
     fetch_reconciliation_from_supabase,
-    save_reconciliation_to_supabase
+    save_reconciliation_to_supabase,
+    delete_client_from_supabase
 )
 
 BASE_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -163,7 +164,10 @@ class AppStore:
         if self.active_client_id == client_id:
             self.active_client_id = self.clients[0]["id"]
             self.clients[0]["is_active"] = True
+        self.client_reconciliation.pop(client_id, None)
         self.save_storage()
+        if is_supabase_enabled():
+            delete_client_from_supabase(client_id)
         return True
 
     def clear_reconciliation(self, client_id: Optional[str] = None):

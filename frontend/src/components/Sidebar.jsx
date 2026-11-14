@@ -19,17 +19,22 @@ import {
   PanelLeft,
   X,
   KeyRound,
-  LogOut
+  LogOut,
+  Edit3,
+  Trash2,
+  Loader2
 } from 'lucide-react';
 
 export default function Sidebar({
-  clients,
+  clients = [],
   activeClient,
   onSwitchClient,
   onOpenNewClientModal,
+  onOpenEditClientModal,
+  onOpenDeleteClientModal,
   onOpenUploadModal,
   onExportExcel,
-  isExporting,
+  isExporting = false,
   activeTab,
   onSelectTab,
   defaultersCount = 0,
@@ -49,8 +54,8 @@ export default function Sidebar({
   const isExpanded = !isCollapsed || isHovered;
 
   const filteredClients = clients.filter(c => 
-    c.name.toLowerCase().includes(clientSearch.toLowerCase()) ||
-    c.gstin.toLowerCase().includes(clientSearch.toLowerCase())
+    (c.name || '').toLowerCase().includes(clientSearch.toLowerCase()) ||
+    (c.gstin || '').toLowerCase().includes(clientSearch.toLowerCase())
   );
 
   const navItems = [
@@ -173,38 +178,94 @@ export default function Sidebar({
             </div>
           )}
 
-          {/* Active Entity Switcher Card with Defined Borders */}
+          {/* Client Profile Section with Edit & Delete Options */}
           <div className="p-3 border-b border-slate-200 relative bg-slate-50/50">
             {isExpanded ? (
               <>
                 <div className="text-[11px] font-bold text-slate-500 uppercase tracking-wider px-1 mb-1.5 flex items-center justify-between">
-                  <span>Client Profile</span>
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 shadow-2xs" title="Active Client"></span>
+                  <span className="flex items-center space-x-1">
+                    <Building2 className="w-3 h-3 text-slate-400" />
+                    <span>Client Profile</span>
+                  </span>
+                  
+                  {/* Action pill: Edit & Delete for Active Client */}
+                  {activeClient && (
+                    <div className="flex items-center space-x-1">
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenEditClientModal(activeClient);
+                        }}
+                        className="p-1 rounded-md text-slate-400 hover:text-amber-700 hover:bg-amber-50 transition-colors"
+                        title="Edit active client profile"
+                      >
+                        <Edit3 className="w-3 h-3" />
+                      </button>
+                      <button
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          onOpenDeleteClientModal(activeClient);
+                        }}
+                        className="p-1 rounded-md text-slate-400 hover:text-rose-700 hover:bg-rose-50 transition-colors"
+                        title="Delete active client profile"
+                      >
+                        <Trash2 className="w-3 h-3" />
+                      </button>
+                    </div>
+                  )}
                 </div>
                 
-                <button
-                  onClick={() => setDropdownOpen(!dropdownOpen)}
-                  className="w-full flex items-center justify-between p-2.5 rounded-xl bg-white hover:bg-slate-50 border border-slate-300 text-left transition-colors shadow-2xs group"
-                >
-                  <div className="flex items-center space-x-2.5 min-w-0">
-                    <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
-                      {activeClient?.name?.substring(0, 2).toUpperCase() || 'CA'}
+                {/* Client Profile Box */}
+                <div className="rounded-xl bg-white border border-slate-300 shadow-2xs overflow-hidden">
+                  <button
+                    onClick={() => setDropdownOpen(!dropdownOpen)}
+                    className="w-full flex items-center justify-between p-2.5 hover:bg-slate-50 text-left transition-colors group"
+                  >
+                    <div className="flex items-center space-x-2.5 min-w-0">
+                      <div className="w-7 h-7 rounded-lg bg-blue-600 text-white flex items-center justify-center font-bold text-xs shrink-0 shadow-sm">
+                        {activeClient?.name?.substring(0, 2).toUpperCase() || 'CA'}
+                      </div>
+                      <div className="truncate">
+                        <div className="text-xs font-bold text-slate-900 truncate">
+                          {activeClient ? activeClient.name : 'Select Client'}
+                        </div>
+                        <div className="text-[10px] text-slate-500 font-mono truncate">
+                          {activeClient?.gstin} • <span className="font-bold text-blue-700">FY {activeClient?.fy}</span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="truncate">
-                      <div className="text-xs font-bold text-slate-900 truncate">
-                        {activeClient ? activeClient.name : 'Select Client'}
-                      </div>
-                      <div className="text-[10px] text-slate-500 font-mono truncate">
-                        {activeClient?.gstin} • <span className="font-bold text-blue-700">FY {activeClient?.fy}</span>
-                      </div>
+                    <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
+                  </button>
+
+                  {/* Quick Edit/Delete toolbar below active client */}
+                  <div className="px-2.5 py-1.5 bg-slate-50/80 border-t border-slate-100 flex items-center justify-between text-[11px]">
+                    <span className="text-slate-500 font-mono truncate">
+                      {activeClient?.contact_person || 'Active Audit'}
+                    </span>
+                    <div className="flex items-center space-x-1.5 shrink-0">
+                      <button
+                        onClick={() => onOpenEditClientModal(activeClient)}
+                        className="px-2 py-0.5 rounded-md text-[10px] font-bold text-slate-700 bg-white hover:bg-slate-100 border border-slate-200 shadow-2xs flex items-center space-x-1"
+                        title="Edit Profile"
+                      >
+                        <Edit3 className="w-2.5 h-2.5 text-amber-600" />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        onClick={() => onOpenDeleteClientModal(activeClient)}
+                        className="px-2 py-0.5 rounded-md text-[10px] font-bold text-rose-700 bg-white hover:bg-rose-50 border border-slate-200 shadow-2xs flex items-center space-x-1"
+                        title="Delete Profile"
+                      >
+                        <Trash2 className="w-2.5 h-2.5 text-rose-600" />
+                        <span>Delete</span>
+                      </button>
                     </div>
                   </div>
-                  <ChevronDown className={`w-3.5 h-3.5 text-slate-400 shrink-0 transition-transform ${dropdownOpen ? 'rotate-180' : ''}`} />
-                </button>
+                </div>
 
                 {/* Switcher Dropdown */}
                 {dropdownOpen && (
-                  <div className="absolute left-3 right-3 mt-1.5 bg-white rounded-xl shadow-xl border border-slate-300 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
+                  <div className="absolute left-3 right-3 mt-1.5 bg-white rounded-xl shadow-2xl border border-slate-300 py-1.5 z-50 animate-in fade-in zoom-in-95 duration-150">
                     <div className="p-2 border-b border-slate-200">
                       <div className="relative">
                         <Search className="w-3.5 h-3.5 text-slate-400 absolute left-2.5 top-2.5" />
@@ -218,26 +279,53 @@ export default function Sidebar({
                       </div>
                     </div>
 
-                    <div className="max-h-48 overflow-y-auto py-1">
+                    <div className="max-h-52 overflow-y-auto py-1 divide-y divide-slate-100">
                       {filteredClients.map((c) => (
-                        <button
+                        <div
                           key={c.id}
-                          onClick={() => {
-                            onSwitchClient(c.id);
-                            setDropdownOpen(false);
-                          }}
-                          className={`w-full px-3 py-2 text-left hover:bg-slate-50 flex items-center justify-between text-xs transition-colors border-b border-slate-100 last:border-0 ${
+                          className={`w-full px-2.5 py-2 hover:bg-slate-50 flex items-center justify-between text-xs transition-colors ${
                             c.id === activeClient?.id ? 'bg-blue-50/80 font-bold text-blue-900' : 'text-slate-700'
                           }`}
                         >
-                          <div className="truncate pr-2">
-                            <div className="truncate font-semibold">{c.name}</div>
-                            <div className="text-[10px] text-slate-500 font-mono">{c.gstin}</div>
+                          <button
+                            onClick={() => {
+                              onSwitchClient(c.id);
+                              setDropdownOpen(false);
+                            }}
+                            className="flex-1 text-left truncate pr-2 group"
+                          >
+                            <div className="truncate font-semibold text-slate-900 group-hover:text-blue-700">{c.name}</div>
+                            <div className="text-[10px] text-slate-500 font-mono truncate">{c.gstin} • FY {c.fy || '2025-26'}</div>
+                          </button>
+
+                          <div className="flex items-center space-x-1 shrink-0">
+                            {c.id === activeClient?.id && (
+                              <Check className="w-3.5 h-3.5 text-blue-600 mr-1" />
+                            )}
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDropdownOpen(false);
+                                onOpenEditClientModal(c);
+                              }}
+                              className="p-1 rounded text-slate-400 hover:text-amber-700 hover:bg-amber-100 transition-colors"
+                              title={`Edit ${c.name}`}
+                            >
+                              <Edit3 className="w-3 h-3" />
+                            </button>
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDropdownOpen(false);
+                                onOpenDeleteClientModal(c);
+                              }}
+                              className="p-1 rounded text-slate-400 hover:text-rose-700 hover:bg-rose-100 transition-colors"
+                              title={`Delete ${c.name}`}
+                            >
+                              <Trash2 className="w-3 h-3" />
+                            </button>
                           </div>
-                          {c.id === activeClient?.id && (
-                            <Check className="w-3.5 h-3.5 text-blue-600 shrink-0" />
-                          )}
-                        </button>
+                        </div>
                       ))}
                     </div>
 
@@ -258,11 +346,11 @@ export default function Sidebar({
               </>
             ) : (
               /* Compact Icon Avatar when collapsed */
-              <div className="flex justify-center">
+              <div className="flex flex-col items-center space-y-2">
                 <button
                   onClick={onToggleCollapse}
                   className="w-9 h-9 rounded-xl bg-blue-600 text-white flex items-center justify-center font-bold text-xs shadow-sm border border-blue-700 hover:ring-2 hover:ring-blue-300 transition-all"
-                  title={`${activeClient?.name || 'Client'} (${activeClient?.gstin})`}
+                  title={`${activeClient?.name || 'Client'} (${activeClient?.gstin}) - Click to expand`}
                 >
                   {activeClient?.name?.substring(0, 2).toUpperCase() || 'CA'}
                 </button>
@@ -270,11 +358,80 @@ export default function Sidebar({
             )}
           </div>
 
+          {/* Quick Actions: Upload Dumps & Export (Prominently featured in Sidebar) */}
+          <div className="p-2.5 border-b border-slate-200 bg-white">
+            {isExpanded && (
+              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2 py-1 flex items-center justify-between">
+                <span>Quick Actions</span>
+                <span className="text-[10px] font-mono text-emerald-600 font-bold">Live Engine</span>
+              </div>
+            )}
+
+            <div className={`space-y-1.5 ${!isExpanded ? 'flex flex-col items-center' : ''}`}>
+              {/* Upload Dumps Action */}
+              <button
+                onClick={onOpenUploadModal}
+                className={`w-full flex items-center rounded-xl text-xs font-bold text-slate-900 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 border border-blue-200 shadow-2xs transition-all ${
+                  isExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5 w-10 h-10'
+                }`}
+                title="Upload Books & GSTR-2B Dumps"
+              >
+                <div className="flex items-center space-x-2.5 min-w-0">
+                  <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                    <Upload className="w-3.5 h-3.5" />
+                  </div>
+                  {isExpanded && (
+                    <div className="truncate text-left">
+                      <div className="font-extrabold text-blue-950 truncate">Upload Dumps</div>
+                      <div className="text-[10px] text-blue-700/80 font-mono font-medium truncate">Books + 2B XLSX</div>
+                    </div>
+                  )}
+                </div>
+                {isExpanded && (
+                  <span className="text-[10px] font-bold text-blue-700 bg-white px-1.5 py-0.5 rounded border border-blue-200">
+                    Import
+                  </span>
+                )}
+              </button>
+
+              {/* Export 5-Sheet Excel Action */}
+              <button
+                onClick={onExportExcel}
+                disabled={isExporting}
+                className={`w-full flex items-center rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 border border-slate-950 shadow-sm transition-all disabled:opacity-50 ${
+                  isExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5 w-10 h-10'
+                }`}
+                title="Export 5-Sheet Consolidated Audit Excel"
+              >
+                <div className="flex items-center space-x-2.5 min-w-0">
+                  <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                    {isExporting ? (
+                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                    ) : (
+                      <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+                    )}
+                  </div>
+                  {isExpanded && (
+                    <div className="truncate text-left">
+                      <div className="font-extrabold text-white truncate">Export Excel</div>
+                      <div className="text-[10px] text-emerald-300 font-mono font-medium truncate">5-Sheet Parity</div>
+                    </div>
+                  )}
+                </div>
+                {isExpanded && (
+                  <span className="text-[10px] font-bold font-mono text-emerald-400 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">
+                    {isExporting ? 'Building...' : '.XLSX'}
+                  </span>
+                )}
+              </button>
+            </div>
+          </div>
+
           {/* Navigation Links with Defined Borders */}
           <div className="p-2.5 space-y-1.5">
             {isExpanded && (
               <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2 py-1">
-                Navigation
+                Audit Views
               </div>
             )}
 
@@ -317,40 +474,6 @@ export default function Sidebar({
                 </button>
               );
             })}
-          </div>
-
-          {/* Actions & Export Section with Defined Borders */}
-          <div className="p-3 border-t border-slate-200 mt-2 space-y-2 bg-slate-50/40">
-            {isExpanded && (
-              <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-1">
-                Actions
-              </div>
-            )}
-
-            {/* Upload Button */}
-            <button
-              onClick={onOpenUploadModal}
-              className={`w-full flex items-center rounded-xl text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 shadow-2xs transition-colors ${
-                isExpanded ? 'space-x-2 px-3 py-2' : 'justify-center p-2.5'
-              }`}
-              title="Upload Books & 2B Dumps"
-            >
-              <Upload className="w-4 h-4 text-blue-600 shrink-0" />
-              {isExpanded && <span>Upload Dumps</span>}
-            </button>
-
-            {/* Excel Export Button */}
-            <button
-              onClick={onExportExcel}
-              disabled={isExporting}
-              className={`w-full flex items-center rounded-xl text-xs font-black text-white bg-emerald-600 hover:bg-emerald-700 border border-emerald-700 shadow-sm transition-all disabled:opacity-50 ${
-                isExpanded ? 'justify-center space-x-2 px-3 py-2.5' : 'justify-center p-2.5'
-              }`}
-              title="Export 5-Sheet Consolidated Excel"
-            >
-              <Download className="w-4 h-4 shrink-0 stroke-[2.5]" />
-              {isExpanded && <span>{isExporting ? 'Generating...' : 'Export 5-Sheet Excel'}</span>}
-            </button>
           </div>
 
         </div>

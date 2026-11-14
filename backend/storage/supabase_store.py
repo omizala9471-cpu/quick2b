@@ -52,17 +52,30 @@ def upsert_client_to_supabase(client_data: Dict[str, Any]) -> bool:
             "name": client_data.get("name", ""),
             "trade_name": client_data.get("trade_name", ""),
             "gstin": client_data.get("gstin", ""),
-            "email": client_data.get("email", "omizala9471@gmail.com"),
+            "email": client_data.get("email", "contact@quick2b.in"),
             "fy": client_data.get("fy", "2025-26"),
             "contact_person": client_data.get("contact_person", ""),
             "phone": client_data.get("phone", ""),
             "is_active": client_data.get("is_active", False),
-            "owner_email": "omizala9471@gmail.com"
+            "owner_email": "admin@quick2b.in"
         }
         client.table("quick2b_clients").upsert(payload).execute()
         return True
     except Exception as e:
         logger.error(f"Error upserting client to Supabase: {e}")
+        return False
+
+def delete_client_from_supabase(client_id: str) -> bool:
+    client = get_supabase_client()
+    if not client:
+        return False
+    try:
+        client.table("quick2b_reconciliation_items").delete().eq("client_id", client_id).execute()
+        client.table("quick2b_reconciliations").delete().eq("client_id", client_id).execute()
+        client.table("quick2b_clients").delete().eq("id", client_id).execute()
+        return True
+    except Exception as e:
+        logger.error(f"Error deleting client from Supabase: {e}")
         return False
 
 def fetch_reconciliation_from_supabase(client_id: str) -> Optional[Dict[str, Any]]:
@@ -98,7 +111,7 @@ def save_reconciliation_to_supabase(client_id: str, reco_data: Dict[str, Any]) -
             "total_records": reco_data.get("total_records", len(reco_data.get("items", []))),
             "kpis": reco_data.get("kpis", {}),
             "summary_matrix": reco_data.get("summary_matrix", {}),
-            "owner_email": "omizala9471@gmail.com"
+            "owner_email": "admin@quick2b.in"
         }
         client.table("quick2b_reconciliations").upsert(summary_payload).execute()
 
