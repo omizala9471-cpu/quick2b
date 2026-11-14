@@ -357,7 +357,7 @@ export default function Sidebar({
           </div>
 
           {/* Quick Actions: Upload Dumps & Export (Prominently featured in Sidebar) */}
-          <div className="p-2.5 border-b border-slate-200 bg-white">
+          <div className={`border-b border-slate-200 bg-white ${isExpanded ? 'p-2.5 space-y-1.5' : 'py-2 px-0'}`}>
             {isExpanded && (
               <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2 py-1 flex items-center justify-between">
                 <span>Quick Actions</span>
@@ -365,68 +365,82 @@ export default function Sidebar({
               </div>
             )}
 
-            <div className={`space-y-1.5 ${!isExpanded ? 'flex flex-col items-center' : ''}`}>
-              {/* Upload Dumps Action */}
-              <button
-                onClick={onOpenUploadModal}
-                className={`w-full flex items-center rounded-xl text-xs font-bold text-slate-900 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 border border-blue-200 shadow-2xs transition-all ${
-                  isExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5 w-10 h-10'
-                }`}
-                title="Upload Books & GSTR-2B Dumps"
-              >
-                <div className="flex items-center space-x-2.5 min-w-0">
-                  <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-                    <Upload className="w-3.5 h-3.5" />
-                  </div>
-                  {isExpanded && (
+            {isExpanded ? (
+              <div className="space-y-1.5">
+                {/* Upload Dumps Action */}
+                <button
+                  onClick={onOpenUploadModal}
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-slate-900 bg-gradient-to-r from-blue-50 to-indigo-50 hover:from-blue-100 hover:to-indigo-100 border border-blue-200 shadow-2xs transition-all cursor-pointer"
+                  title="Upload Books & GSTR-2B Dumps"
+                >
+                  <div className="flex items-center space-x-2.5 min-w-0">
+                    <div className="w-6 h-6 rounded-lg bg-blue-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                      <Upload className="w-3.5 h-3.5" />
+                    </div>
                     <div className="truncate text-left">
                       <div className="font-extrabold text-blue-950 truncate">Upload Dumps</div>
                       <div className="text-[10px] text-blue-700/80 font-mono font-medium truncate">Books + 2B XLSX</div>
                     </div>
-                  )}
-                </div>
-                {isExpanded && (
+                  </div>
                   <span className="text-[10px] font-bold text-blue-700 bg-white px-1.5 py-0.5 rounded border border-blue-200">
                     Import
                   </span>
-                )}
-              </button>
+                </button>
 
-              {/* Export 5-Sheet Excel Action */}
-              <button
-                onClick={onExportExcel}
-                disabled={isExporting}
-                className={`w-full flex items-center rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 border border-slate-950 shadow-sm transition-all disabled:opacity-50 ${
-                  isExpanded ? 'justify-between px-3 py-2' : 'justify-center p-2.5 w-10 h-10'
-                }`}
-                title="Export 5-Sheet Consolidated Audit Excel"
-              >
-                <div className="flex items-center space-x-2.5 min-w-0">
-                  <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
-                    {isExporting ? (
-                      <Loader2 className="w-3.5 h-3.5 animate-spin" />
-                    ) : (
-                      <Download className="w-3.5 h-3.5 stroke-[2.5]" />
-                    )}
-                  </div>
-                  {isExpanded && (
+                {/* Export 5-Sheet Excel Action */}
+                <button
+                  onClick={onExportExcel}
+                  disabled={isExporting}
+                  className="w-full flex items-center justify-between px-3 py-2 rounded-xl text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 border border-slate-950 shadow-sm transition-all disabled:opacity-50 cursor-pointer"
+                  title="Export 5-Sheet Consolidated Audit Excel"
+                >
+                  <div className="flex items-center space-x-2.5 min-w-0">
+                    <div className="w-6 h-6 rounded-lg bg-emerald-600 text-white flex items-center justify-center shrink-0 shadow-2xs">
+                      {isExporting ? (
+                        <Loader2 className="w-3.5 h-3.5 animate-spin" />
+                      ) : (
+                        <Download className="w-3.5 h-3.5 stroke-[2.5]" />
+                      )}
+                    </div>
                     <div className="truncate text-left">
                       <div className="font-extrabold text-white truncate">Export Excel</div>
                       <div className="text-[10px] text-emerald-300 font-mono font-medium truncate">5-Sheet Parity</div>
                     </div>
-                  )}
-                </div>
-                {isExpanded && (
+                  </div>
                   <span className="text-[10px] font-bold font-mono text-emerald-400 bg-slate-800 px-1.5 py-0.5 rounded border border-slate-700">
                     {isExporting ? 'Building...' : '.XLSX'}
                   </span>
-                )}
-              </button>
-            </div>
+                </button>
+              </div>
+            ) : (
+              /* Perfectly Centered Collapsed Action Icons */
+              <div className="w-full flex flex-col items-center space-y-2">
+                <button
+                  onClick={onOpenUploadModal}
+                  className="w-10 h-10 rounded-xl bg-blue-50 hover:bg-blue-100 text-blue-600 border border-blue-200 flex items-center justify-center shadow-2xs transition-all hover:scale-105 cursor-pointer"
+                  title="Upload Books & GSTR-2B Dumps"
+                >
+                  <Upload className="w-4 h-4" />
+                </button>
+
+                <button
+                  onClick={onExportExcel}
+                  disabled={isExporting}
+                  className="w-10 h-10 rounded-xl bg-slate-900 hover:bg-slate-800 text-emerald-400 border border-slate-950 flex items-center justify-center shadow-sm transition-all disabled:opacity-50 hover:scale-105 cursor-pointer"
+                  title="Export 5-Sheet Consolidated Audit Excel"
+                >
+                  {isExporting ? (
+                    <Loader2 className="w-4 h-4 animate-spin text-emerald-400" />
+                  ) : (
+                    <Download className="w-4 h-4 stroke-[2.5]" />
+                  )}
+                </button>
+              </div>
+            )}
           </div>
 
           {/* Navigation Links with Defined Borders */}
-          <div className="p-2.5 space-y-1.5">
+          <div className={`space-y-1.5 ${isExpanded ? 'p-2.5' : 'py-2 px-0'}`}>
             {isExpanded && (
               <div className="text-[10px] font-bold text-slate-500 uppercase tracking-wider px-2 py-1">
                 Audit Views
@@ -438,38 +452,42 @@ export default function Sidebar({
               const isActive = activeTab === item.id;
 
               return (
-                <button
-                  key={item.id}
-                  onClick={() => {
-                    onSelectTab(item.id);
-                    if (onCloseMobile) onCloseMobile();
-                  }}
-                  className={`w-full flex items-center rounded-xl text-xs font-semibold transition-all ${
-                    isExpanded 
-                      ? 'justify-between px-3 py-2.5' 
-                      : 'justify-center p-2.5'
-                  } ${
-                    isActive
-                      ? 'bg-slate-900 text-white font-bold shadow-sm border border-slate-900'
-                      : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border border-transparent hover:border-slate-300'
-                  }`}
-                  title={!isExpanded ? `${item.label} (${item.badge})` : undefined}
-                >
-                  <div className="flex items-center space-x-2.5 min-w-0">
-                    <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : item.isDanger ? 'text-rose-600' : 'text-slate-600'}`} />
-                    {isExpanded && <span className="truncate">{item.label}</span>}
-                  </div>
-                  
-                  {isExpanded && (
-                    <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono shrink-0 ${
-                      isActive 
-                        ? 'bg-slate-800 text-slate-200 border border-slate-700' 
-                        : item.badgeClass
-                    }`}>
-                      {item.badge}
-                    </span>
-                  )}
-                </button>
+                <div key={item.id} className={!isExpanded ? "flex justify-center" : ""}>
+                  <button
+                    onClick={() => {
+                      onSelectTab(item.id);
+                      if (onCloseMobile) onCloseMobile();
+                    }}
+                    className={`flex items-center rounded-xl text-xs font-semibold transition-all ${
+                      isExpanded 
+                        ? 'w-full justify-between px-3 py-2.5' 
+                        : 'w-10 h-10 justify-center p-0'
+                    } ${
+                      isActive
+                        ? 'bg-slate-900 text-white font-bold shadow-sm border border-slate-900'
+                        : 'text-slate-700 hover:text-slate-900 hover:bg-slate-100 border border-transparent hover:border-slate-300'
+                    }`}
+                    title={!isExpanded ? `${item.label} (${item.badge})` : undefined}
+                  >
+                    {isExpanded ? (
+                      <>
+                        <div className="flex items-center space-x-2.5 min-w-0">
+                          <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : item.isDanger ? 'text-rose-600' : 'text-slate-600'}`} />
+                          <span className="truncate">{item.label}</span>
+                        </div>
+                        <span className={`px-2 py-0.5 rounded-md text-[10px] font-mono shrink-0 ${
+                          isActive 
+                            ? 'bg-slate-800 text-slate-200 border border-slate-700' 
+                            : item.badgeClass
+                        }`}>
+                          {item.badge}
+                        </span>
+                      </>
+                    ) : (
+                      <Icon className={`w-4 h-4 shrink-0 ${isActive ? 'text-white' : item.isDanger ? 'text-rose-600' : 'text-slate-600'}`} />
+                    )}
+                  </button>
+                </div>
               );
             })}
           </div>

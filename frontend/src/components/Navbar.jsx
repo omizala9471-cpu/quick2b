@@ -99,42 +99,20 @@ export default function Navbar({
 
       </div>
 
-      {/* Right: Quick Action Buttons */}
-      <div className="flex items-center space-x-2.5 shrink-0">
+      {/* Right: Quick2B Cloud Identity & Security Controls */}
+      <div className="flex items-center space-x-3 shrink-0">
         
-        {/* Upload Shortcut */}
-        <button
-          onClick={onOpenUploadModal}
-          className="flex items-center space-x-1.5 px-3 py-1.5 rounded-xl text-xs font-bold text-slate-800 bg-white hover:bg-slate-50 border border-slate-300 transition-colors shadow-2xs"
-          title="Upload Books & GSTR-2B Files"
-        >
-          <Upload className="w-3.5 h-3.5 text-blue-600" />
-          <span>Upload Dumps</span>
-        </button>
-
-        {/* Primary Export Button */}
-        <button
-          onClick={onExportExcel}
-          disabled={isExporting}
-          className="flex items-center space-x-1.5 px-4 py-1.5 rounded-xl text-xs font-black text-white bg-slate-900 hover:bg-slate-800 border border-slate-950 transition-all disabled:opacity-50 shadow-sm"
-        >
-          {isExporting ? (
-            <Loader2 className="w-3.5 h-3.5 animate-spin text-emerald-400" />
-          ) : (
-            <Download className="w-3.5 h-3.5 text-emerald-400 stroke-[2.5]" />
-          )}
-          <span className="whitespace-nowrap">{isExporting ? 'Generating...' : 'Export 5-Sheet Excel'}</span>
-        </button>
-
-        {/* Quick2B User Profile Badge & Security Options */}
-        <div className="flex items-center space-x-2 pl-2 border-l border-slate-300 text-xs">
-          <div className="hidden sm:flex items-center space-x-2 mr-1">
+        {/* Quick2B User Profile Badge */}
+        <div className="flex items-center space-x-2 text-xs">
+          <div className="flex items-center space-x-2.5 mr-1">
             <Quick2BLogo size={28} />
-            <div className="text-left">
+            <div className="text-left hidden sm:block">
               <div className="text-[11px] font-bold text-slate-900 leading-tight">Quick2B Cloud</div>
               <div className="text-[10px] text-emerald-600 font-mono font-bold leading-tight">Audit Portal</div>
             </div>
           </div>
+
+          <div className="h-5 w-px bg-slate-200 hidden sm:block" />
 
           {/* Security / Password Button */}
           <button
